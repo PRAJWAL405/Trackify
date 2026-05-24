@@ -1,7 +1,7 @@
 export default function LoadingSpinner() {
   return (
     <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
-      <div className="spinner mb-6"></div>
+      <div className="spinner mb-5"></div>
       <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
         Analyzing playlist...
       </p>
