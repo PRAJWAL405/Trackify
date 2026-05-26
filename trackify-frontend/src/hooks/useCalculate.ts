@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export type SpeedEntry = { formatted: string; timeSaved: string };
+export type SpeedEntry = { seconds: number; formatted: string; timeSaved: string };
 export type Playlist = {
   playlistId?: string;
   playlistTitle: string;
@@ -8,7 +8,7 @@ export type Playlist = {
   totalVideos: number;
   averageDuration?: string;
   speeds?: Record<string, SpeedEntry>;
-  dailyPlan?: { daysNeeded: number; completionDate: string } | null;
+  dailyPlan?: { daysNeeded: number; completionDate: string; minutesPerDay: number } | null;
 };
 export type CalcResult = {
   playlists: Playlist[];

@@ -86,12 +86,14 @@ public class PlaylistResponse {
     public static class DailyPlanResult {
         private int daysNeeded;
         private String completionDate;
+        private int minutesPerDay;
 
         public DailyPlanResult() {}
 
-        public DailyPlanResult(int daysNeeded, String completionDate) {
+        public DailyPlanResult(int daysNeeded, String completionDate, int minutesPerDay) {
             this.daysNeeded = daysNeeded;
             this.completionDate = completionDate;
+            this.minutesPerDay = minutesPerDay;
         }
 
         public int getDaysNeeded() { return daysNeeded; }
@@ -99,6 +101,9 @@ public class PlaylistResponse {
 
         public String getCompletionDate() { return completionDate; }
         public void setCompletionDate(String completionDate) { this.completionDate = completionDate; }
+
+        public int getMinutesPerDay() { return minutesPerDay; }
+        public void setMinutesPerDay(int minutesPerDay) { this.minutesPerDay = minutesPerDay; }
     }
 
     public static class OverallSummary {

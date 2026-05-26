@@ -1,4 +1,5 @@
 import type { CalcResult, Playlist } from "@/hooks/useCalculate";
+import { useState } from "react";
 
 function Stat({
   label, value, gradient, mono = true,
@@ -12,6 +13,30 @@ function Stat({
 }
 
 function PlaylistBlock({ playlist, index, badge }: { playlist: Playlist; index: number; badge?: string }) {
+  const [selectedSpeed, setSelectedSpeed] = useState("1x");
+
+  let daysNeeded = playlist.dailyPlan?.daysNeeded;
+  let completionDate = playlist.dailyPlan?.completionDate;
+
+  if (playlist.dailyPlan && playlist.speeds && playlist.speeds[selectedSpeed]) {
+    // Fallback if backend wasn't restarted yet
+    let minutesPerDay = playlist.dailyPlan.minutesPerDay;
+    if (!minutesPerDay && playlist.speeds["1x"]) {
+      const originalMinutes = playlist.speeds["1x"].seconds / 60.0;
+      minutesPerDay = originalMinutes / playlist.dailyPlan.daysNeeded;
+    }
+
+    if (minutesPerDay) {
+      const speedSeconds = playlist.speeds[selectedSpeed].seconds;
+      const totalMinutes = speedSeconds / 60.0;
+      daysNeeded = Math.ceil(totalMinutes / minutesPerDay);
+      
+      const date = new Date();
+      date.setDate(date.getDate() + daysNeeded);
+      completionDate = date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+  }
+
   return (
     <article
       className="glass glass-elevated p-8 lg:p-10 animate-fade-in-up"
@@ -90,13 +115,25 @@ function PlaylistBlock({ playlist, index, badge }: { playlist: Playlist; index: 
         <div className="mt-8 rounded-2xl p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 gap-8"
              style={{ background: "linear-gradient(135deg, oklch(0.78 0.17 160 / 0.08), oklch(0.78 0.17 160 / 0.02))", border: "1px solid oklch(0.78 0.17 160 / 0.22)" }}>
           <div>
-            <p className="stat-label">Days to finish</p>
-            <p className="stat-value stat-value-xl text-mono mt-3">{playlist.dailyPlan.daysNeeded}</p>
+            <div className="flex items-center gap-3">
+              <p className="stat-label">Days to finish</p>
+              <select
+                className="bg-[oklch(0.13_0.018_280/0.8)] text-xs text-text-primary border border-border-subtle rounded px-2 py-0.5 outline-none cursor-pointer"
+                value={selectedSpeed}
+                onChange={(e) => setSelectedSpeed(e.target.value)}
+                title="Select playback speed"
+              >
+                {playlist.speeds && Object.keys(playlist.speeds).map(speed => (
+                  <option key={speed} value={speed}>@ {speed}</option>
+                ))}
+              </select>
+            </div>
+            <p className="stat-value stat-value-xl text-mono mt-3">{daysNeeded}</p>
             <p className="text-caption mt-2">at your daily window</p>
           </div>
           <div className="md:text-right">
             <p className="stat-label">Estimated finish</p>
-            <p className="font-display text-3xl font-semibold tracking-tight mt-3">{playlist.dailyPlan.completionDate}</p>
+            <p className="font-display text-3xl font-semibold tracking-tight mt-3">{completionDate}</p>
             <p className="text-caption mt-2">starting today</p>
           </div>
         </div>

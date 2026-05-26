@@ -183,7 +183,7 @@ public class PlaylistService {
         LocalDate completionDate = LocalDate.now().plusDays(daysNeeded);
         String formattedDate = completionDate.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"));
 
-        return new DailyPlanResult(daysNeeded, formattedDate);
+        return new DailyPlanResult(daysNeeded, formattedDate, minutesPerDay);
     }
 
     /**
